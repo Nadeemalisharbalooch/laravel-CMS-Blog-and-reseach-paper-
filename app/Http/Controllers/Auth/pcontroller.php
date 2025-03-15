@@ -7,6 +7,7 @@ use App\Models\category;
 use App\Models\gallery;
 use App\Models\post;
 use App\Models\tag;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
@@ -147,14 +148,28 @@ class pcontroller extends Controller
      */
     public function destroy(string $id)
     {
-      $post = Post::find($id);
-      if (!$post) {
-        abort(404);
-      }
-      $post->tags()->detach();
-      $post->delete();
-      return redirect()->back()->with('success', 'Post deleted successfully.');
+        try {
+            DB::beginTransaction();
+    
+            $post = Post::find($id);
+    
+            if (!$post) {
+                abort(404, 'Post not found.');
+            }
+    
+            $tags = $post->tags;
+            $post->tags()->detach();
+            $post->delete();
+    
+            DB::commit();
+    
+            return redirect()->back()->with('success', 'Post deleted successfully.');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()->with('success', 'Error: ' . $e->getMessage());
+        }
     }
+    
     private function uploadfile($file){
       $filename=rand(100,1000).time().$file->getClientOriginalName();
          
@@ -162,9 +177,8 @@ class pcontroller extends Controller
       $filwithpath=$filpath.$filename;
       $file->move($filpath,$filename);
 
-    return $filename;
-  
-    }
+       return $filename;
+    }     
     private function storeimage($filename){
       $gallery=post::create([
         'image'=>$filename,
@@ -173,6 +187,9 @@ class pcontroller extends Controller
       return $gallery;
     }
 }
+
+
+
 
 
 

@@ -19,7 +19,6 @@ class SiteController extends Controller
     {
         // $blog=post::all();
         $blog = post::paginate(6); // Assuming you want 10 blog posts per page
-
         return view('site.blog')->with('blog',$blog);
     }
 
@@ -30,9 +29,8 @@ class SiteController extends Controller
     {
              auth::logout();
              return view('auth\login');
-         
-    }
 
+    }
     /**
      * Store a newly created resource in storage.
      */

@@ -2,20 +2,22 @@
 
 namespace App\Models;
 
-use Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class gallery extends Model
+class Gallery extends Model
 {
     use HasFactory;
-    public $uploadDirectory='/storage/auth/posts/';
-    public const POST_IMAGE=1;
-    protected $fillable=['image','type'];
 
-    public function image():Attribute{
-        return Attribute::make(
-            get: fn($image)=>$this->uploadDirectory.$image
-        );
+    // Define the upload directory as a constant
+    public const UPLOAD_DIRECTORY = '/storage/auth/posts/';
+
+    // Specify the fillable attributes
+    protected $fillable = ['image', 'type'];
+
+    // Define a getter method to format the image attribute
+    public function getImageAttribute($image)
+    {
+        return $this->uploadDirectory . $image;
     }
 }

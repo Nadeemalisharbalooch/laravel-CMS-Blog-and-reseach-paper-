@@ -35,7 +35,7 @@ use Illuminate\Support\Facades\Route;
     Route::get('test', function () {
         return view('site.check'); 
     });
-    Auth::routes();
+    Auth::routes(['verify'=>true]);
     // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
     route::get('dash',[dashboardcontroller::class,'dashboard'])->name('dashboard');
@@ -79,7 +79,9 @@ use Illuminate\Support\Facades\Route;
 route::get('form',function () {
 return view('auth.posts.form');
 });
-  
+
+// here new updates
+route::delete('deleteuser/{id}',[Usercontroller::class,'destroy'])->name('deleteuser');  
 route::get('category',[categorycontroller::class,'index']);
 route::get('tag',[tagcontroller::class,'index']);
 Route::post('sthore', 'App\Http\Controllers\auth\pcontroller@store')->name('store');
@@ -89,8 +91,6 @@ Route::post('sthore', 'App\Http\Controllers\auth\pcontroller@store')->name('stor
 //     return view('site.index');
 //     });
 // route::get('/',[blogcontroller::class,'index']);
-
-
 
 Route::post('/blogs/{id}/comments', [CommentController::class, 'comment'])->name('comment');
 Route::get('comments/{id}', [commnetscontroller::class, 'comment'])->middleware('auth');
@@ -118,7 +118,7 @@ route::get('blog',[SiteController::class,'index'])->name('blog');
 // Route::get('reseach',function(){
 // return view('site\reseach');
 // });
- route::get('sitenew',[SiteController::class,'newindex'])->name('newindex');
+ route::get('sitenew',[SiteController::class,'newindex'])->name('newindex')->middleware('verified');
  route::get('authlogout',[SiteController::class,'authlogout'])->name('authlogout');
  route::get('reseach',[Reseachpaper::class,'siteallshow'])->name('reseach');
 
@@ -150,9 +150,7 @@ route::get('blog',[SiteController::class,'index'])->name('blog');
               Route::get('about',function(){
           return view('site.about');
               });
-
-        
-
+   
         Route::post('commentssee/{id}', [CommentsController::class, 'indexshow'])->name('commentssee');
         Route::get('showallcomments', [CommentsController::class, 'showallcomments'])->name('showallcomments');
         Route::get('show123/{id}', [CommentsController::class, 'show123'])->name('show123');
@@ -164,5 +162,7 @@ route::get('blog',[SiteController::class,'index'])->name('blog');
 
         Route::get('useradmin',function(){
           return view('layouts\about');
-                });   
+                });
+
+                   
                 

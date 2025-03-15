@@ -47,8 +47,9 @@
                 
                
                 <td class="outer">
-              <form action="{{url('delete',$user->id)}}" method="get" class="inner">
-              <a href="" class="btn btn-success btn-sm inner">Block</a>
+                <a href="" class="btn btn-success btn-sm inner">Block</a>
+              <form action="{{route('deleteuser',$user->id)}}" method="get" class="inner">
+            
               <button type="submit"><a  class="btn btn-danger btn-sm ">Del</a></button>
               </form>           
                 </td>

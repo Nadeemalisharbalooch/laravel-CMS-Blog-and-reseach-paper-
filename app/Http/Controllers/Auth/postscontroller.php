@@ -1,31 +1,31 @@
 <?php
 
-namespace App\Http\Controllers\auth;
+namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\category;
-use App\Models\post;
-use App\Models\tag;
+use App\Models\Post;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
-class postscontroller extends Controller
+class PostsController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         DB::beginTransaction();
         try {
-            $validatedData =$request->validate([
+            $validatedData = $request->validate([
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|string|min:8',
                 'tag' => 'required|string|max:255',
             ]);
     
-            $user = post::create([
+            $user = Post::create([
                 'name' => $validatedData['name'],
                 'email' => $validatedData['email'],
                 'password' => Hash::make($validatedData['password']),
@@ -56,53 +56,42 @@ class postscontroller extends Controller
     {
         return view('auth.posts.show');
     }
+
     /**
      * Store a newly created resource in storage.
      */
-    // public function store(Request $request)
-    // {
-     
-    // //   try{
-        
-    // //     DB::beginTransaction();
-    //     $post= post::create([
-    //         'user_id'=>auth()->id(),
-    //         'title'=>$request->title,
-    //         'description'=>$request->description,
-    //         'status'=>$request->status,
-    //         'category_id'=>$request->category
-    //        ]);
-           
-    //     foreach($request->tags as $tag){
-    //         $post->tags()->attach($tag);
-    //         return "done";  
-    //   } 
-    
-    //   DB::commit();
-    //   $request->session()->flash('alert-success','Post create successfuly');
-    // return "done";
+    public function store(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $post = Post::create([
+                'user_id' => auth()->id(),
+                'title' => $request->title,
+                'description' => $request->description,
+                'status' => $request->status,
+                'category_id' => $request->category,
+            ]);
 
-    //     }
-    //     catch(\Exception $ex){
-    //         DB::rollBack();
-    //         return back()->withErrors($ex->getMessage());
-    //     }
-            
-        // }
+            if ($request->tags) {
+                foreach ($request->tags as $tag) {
+                    $post->tags()->attach($tag);
+                }
+            }
 
-        public function store(Request $request)
-        {
-            
+            DB::commit();
+            return redirect()->route('posts.index')->with('success', 'Post created successfully.');
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            return back()->withErrors($ex->getMessage());
         }
+    }
 
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        //
         return "show function";
-    
     }
 
     /**
@@ -126,6 +115,6 @@ class postscontroller extends Controller
      */
     public function destroy(string $id)
     {
-    
+        //
     }
 }

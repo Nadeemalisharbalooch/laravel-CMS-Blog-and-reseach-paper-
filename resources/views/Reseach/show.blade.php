@@ -69,8 +69,7 @@
   </div>
 </div>
     @endsection
-  @section('script')
- 
+  @section('script') 
   <script src="{{asset('auth/plugins/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js')}}"></script>
   <script>
       $(document).ready(function(){

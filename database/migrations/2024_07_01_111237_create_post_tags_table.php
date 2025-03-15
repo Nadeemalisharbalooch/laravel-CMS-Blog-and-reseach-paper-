@@ -10,20 +10,20 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {   
-        Schema::create('reactions', function (Blueprint $table) {
+    {
+        Schema::create('post_tags', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('post_id')->constrained();
-            $table->integer('reaction')->default(3);
-            $table->timestamps(); 
+            $table->foreignId('post_id')->constrained()->oncdelete('cascade');
+            $table->foreignId('tag_id')->constrained()->onDelete('cascade');
+            $table->timestamps();
         });
     }
+
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('reactions');
+        Schema::dropIfExists('post_tags');
     }
 };

@@ -48,9 +48,9 @@
                         <td>{{ $reaction->user->name }}</td>
                         <td>{{ $reaction->user->email }}</td>
                         <td>
-    @if ($reaction->reaction == 0)
+    @if ($reaction->reaction == 1)
         Dislike 
-    @elseif ($reaction->reaction == 1)
+    @elseif ($reaction->reaction == 0)
         Like 
     @endif
 </td>

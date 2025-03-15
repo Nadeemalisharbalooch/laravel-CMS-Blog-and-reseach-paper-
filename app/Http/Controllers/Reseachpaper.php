@@ -195,6 +195,8 @@ class Reseachpaper extends Controller
             return redirect()->back()->with('success', 'An error occurred while processing your request.');
         }
     }
+
+
     
 
     /**

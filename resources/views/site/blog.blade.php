@@ -25,9 +25,9 @@
             </form>
         </div>
     </div>
-
+  
     @endforeach
    
 </div>
 {{$blog->links('pagination::bootstrap-5')}}
-@endsection  
+@endsection 

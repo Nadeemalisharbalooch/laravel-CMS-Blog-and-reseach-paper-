@@ -1,7 +1,11 @@
 <?php
 namespace App\Http\Controllers;
+
+use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class Usercontroller extends Controller
 {
@@ -10,7 +14,8 @@ class Usercontroller extends Controller
      */
     public function index()
     {
-    $user=User::all();
+        $loginUserId=Auth::user()->id;
+    $user=User::where('id','!=',$loginUserId)->get();
       return view('auth\posts\showuser')->with('user',$user);
     }
 
@@ -59,10 +64,28 @@ class Usercontroller extends Controller
      */
     public function destroy(string $id)
     {
-        $user=user::where('id',$id)->first();
-        $user->post()->detach();
-        $user->delete();
-        return "user has been successfully Deleted";
+        try {
+            DB::beginTransaction();
+    
+            // Find the user by ID
+            $user = User::find($id);
+    
+            if (!$user) { 
+                abort(404, 'User not found.');
+            }
+            // Detach related records in post_tag table
+            $user->posts()->detach(); // Assuming 'posts' is the relationship method for posts in User model
+    
+            // Delete the user
+            $user->delete();
+    
+            DB::commit();
+    
+            return redirect()->back()->with('success', 'User deleted successfully.');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()->with('success', 'Error: ' . $e->getMessage());
+        }
     }
-}
-
+    
+}  
